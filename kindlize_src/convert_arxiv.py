@@ -441,7 +441,7 @@ def is_new(id):
     """
     if NEW_STYLE.match(id) is not None :
         return(True)
-    elif NEW_STYLE2.match(id) is not None :
+    elif NEW_STYLE2.match(id) is not None:
         return(True)
     elif OLD_STYLE.match(id) is not None:
         return(False)
