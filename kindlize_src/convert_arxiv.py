@@ -135,11 +135,20 @@ def getMaster(texfiles, desdir):
 def getBiblio(bblfiles, desdir):
     """ copy bbl if there is one and only one such file """
     if len(bblfiles) == 1 :
+        # assume everyone is either using bbl or put citations in main tex.
+        # no bib file
+        bblname = bblfiles[0]
         # make sure this works
         bblfile_old = os.path.join(desdir, bblfiles[0])
-        bblfile_new = os.path.join(desdir, "main.bbl")
-        print("copying main bbl file  from %s"% bblfiles[0])
+        bblfile_new = os.path.join(desdir, "bibmain.bbl")
+        print("copying main bbl file from %s"% bblfiles[0])
+        # print bblfile_old
+        # print bblfile_new
         shutil.copy(bblfile_old, bblfile_new)
+    else:
+        print("multiple bbl files, confused, do nothing")
+        bblname = None
+    return(bblname)
 
 def checkMaster(masterfile, texversion) :
     """ find document class and first author name
@@ -489,7 +498,7 @@ def convert(filename, year, saveDir, clibDir, dropDir, font, fontheight, fontwid
     # deal with old latex2.09 files
     handleOldTeX(texversion, clibDir, desdir)
     # copy bbl files if there is one
-    getBiblio(bblfiles, desdir)
+    bblname = getBiblio(bblfiles, desdir)
     # examine documentclass and find author
     classoption, classname, author = checkMaster(masterfile, texversion)
     # copy style files
@@ -499,7 +508,8 @@ def convert(filename, year, saveDir, clibDir, dropDir, font, fontheight, fontwid
     # parse documentclass and options
     col_set, onecol_arg, twocol_arg = parse_documentclass(classname, classopts, desdir)
     # heavy duty modification of the master TeX file
-    kindlizeit(masterfile, hasoptbracket, classname, col_set, onecol_arg, twocol_arg, fontstr, magnifystr)
+    kindlizeit(masterfile, hasoptbracket, classname, col_set, onecol_arg,
+               twocol_arg, fontstr, magnifystr, bblname)
     # recompile
     pdfout = do_latex(clibDir, desdir, masterfile, use_pdflatex=use_pdflatex)
     # rename
@@ -509,7 +519,8 @@ def convert(filename, year, saveDir, clibDir, dropDir, font, fontheight, fontwid
     print("generated pdf file: %s " % newpdf)
     return(newpdf)
 
-def kindlizeit(masterfile, hasoptbracket, classname, col_set, onecol_arg, twocol_arg, fontstr, magnifystr):
+def kindlizeit(masterfile, hasoptbracket, classname, col_set, onecol_arg,
+               twocol_arg, fontstr, magnifystr, bblname):
     """ diagonose the master TeX file.
     """
     # make onecolumn pdf
@@ -563,10 +574,13 @@ def kindlizeit(masterfile, hasoptbracket, classname, col_set, onecol_arg, twocol
     # subst = r"\\end{figure}"
     # substituteAll(masterfile, p, subst)
     # switch names for bbl files \bibliography{ref_hshwang}
-    # change bbl to be named `main`
-    p = re.compile(r"\\bibliography{\S+}")
-    subst = r"\\bibliography{main}"
-    substituteAll(masterfile, p, subst)
+    # change bbl to be named `bibmain`
+    if bblname is None:
+        pass
+    else:
+        p = re.compile(r"\\bibliography{\S+}")
+        subst = r"\\bibliography{bibmain}"
+        substituteAll(masterfile, p, subst)
     # comment out banned package
     for pack in banned_packages :
         p = re.compile("[^\%]usepackage(.*)\{" + pack +"\}")
