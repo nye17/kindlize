@@ -2071,6 +2071,7 @@ endef
 define ps2pdf
 	$(GS) \
 		-dSAFER -dCompatibilityLevel=$(PS_COMPATIBILITY) \
+		-dUseCIEColor \
 		$(if $3,$(PS_EMBED_OPTIONS)) \
 		-q -dNOPAUSE -dBATCH \
 		-sDEVICE=pdfwrite -sstdout=%stderr \

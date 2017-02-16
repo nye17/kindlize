@@ -195,6 +195,10 @@ def checkMaster(masterfile, texversion) :
         print("documentclass is %s"% classname)
     else :
         raise KindleException("missing classname?")
+    if classoption :
+        print("documentclass option is %s"% classoption)
+    else :
+        raise KindleException("missing classoption?")
     if firstauthor :
         firstauthor = firstauthor.replace("~", " ")
         firstauthor = firstauthor.replace(". ", "_")
@@ -249,7 +253,11 @@ def getClass(classname, clibDir, clsfiles, bstfiles, desdir):
 def getOpt(classoption):
     """ determine documentclass options for updating geometry and column info.
     """
-    if classoption != "old" and classoption is not None :
+    if classoption == "[]" or classoption == "[ ]":
+        # human stupidity is ubiquitous.
+        classopts = []
+        hasoptbracket = True
+    elif classoption != "old" and classoption is not None :
         classopts = classoption.lstrip("[").rstrip("]").split(",")
         if len(classopts) == 1 and classopts[0] == "" :
             print("empty class options")
