@@ -16,10 +16,11 @@ NEW_STYLE2 = re.compile(r'\d{4}\.\d{5}(v\d+)?$')
 OLD_STYLE = re.compile( r'(astro-ph)' + r'(\.[A-Z]{2})?/\d{7}(v\d+)?$' )
 
 # geometry configuration
-geostr     = "\usepackage[paperwidth=13.8cm, paperheight=22.0cm, top=0.5cm, left=0.5cm, right=0.5cm, bottom= 0.5cm]{geometry}\n"
+geostr     = "\usepackage[paperwidth=13.8cm, paperheight=22.0cm, top=0.5cm, left=1.0cm, right=0.5cm, bottom=0.5cm]{geometry}\n"
 geostr_apj = "\usepackage[paperwidth=13.8cm, paperheight=22.0cm, top=2.3cm, left=1.5cm, right=0.0cm, bottom=-1.0cm]{geometry}\n"
-geostr_mn  = "\usepackage[paperwidth=13.8cm, paperheight=22.0cm, top=2.5cm, left=0.5cm, right=0.5cm, bottom= 0.5cm]{geometry}\n"
-geostr_els = "\usepackage[paperwidth=15.8cm, paperheight=22.0cm, top=0.5cm, left=0.5cm, right=0.5cm, bottom= 0.3cm]{geometry}\n"
+geostr_mn  = "\usepackage[paperwidth=13.8cm, paperheight=22.0cm, top=2.5cm, left=0.5cm, right=0.5cm, bottom=0.5cm]{geometry}\n"
+geostr_els = "\usepackage[paperwidth=15.8cm, paperheight=22.0cm, top=0.5cm, left=0.5cm, right=0.5cm, bottom=0.3cm]{geometry}\n"
+geostr_aas = "\usepackage[paperwidth=13.8cm, paperheight=22.0cm, top=3.5cm, left=1.5cm, right=0.2cm, bottom=2.5cm]{geometry}\n"
 
 
 # latex cls library
@@ -27,6 +28,7 @@ jname = { "elsart_mm" : "Elsevier Science",
           "aa"        : "AA",
           "emulateapj": "ApJ",
           "aastex"    : "AAS Preprint",
+          "aastex6"    : "AAS Preprint 6",
           "mn2e"      : "MNRAS",
           "article"   : "Generic Article",
           "elsarticle": "Elsevier Science",
@@ -350,6 +352,7 @@ def parse_documentclass(classname, classopts, desdir):
     twocol_arg = "twocolumn"
     if (classname == "elsart_mm"  or classname == "aa"      or
         classname == "emulateapj" or classname == "aastex"  or
+        classname == "aastex6"  or
         classname == "elsarticle" or classname == "revtex4" or
         classname == "mn2e"       or classname == "article") :
         print("Journal Name: %20s"%jname[classname])
@@ -571,6 +574,8 @@ def kindlizeit(masterfile, hasoptbracket, classname, col_set, onecol_arg,
         subst = geostr_mn+fontstr+r"\\begin{document}"+magnifystr
     elif classname == "elsarticle" :
         subst = geostr_els+fontstr+r"\\begin{document}"+magnifystr
+    if classname == "aastex" or classname == "aastex6" :
+        subst = geostr_aas+fontstr+r"\\begin{document}"+magnifystr
     elif classname == "old" :
         subst = r"\\begin{document}"+magnifystr
     else :
