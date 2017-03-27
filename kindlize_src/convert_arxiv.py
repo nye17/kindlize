@@ -307,15 +307,23 @@ def dropit(inpdf, dropDir, where="") :
         print("drop %s into dropbox  as %s"%(pdf, despdf))
 
 def do_latex(clibDir, desdir, masterfile, use_pdflatex=False) :
-    if use_pdflatex :
-        mkfile = os.path.join(clibDir, "Makefile_pdflatex")
-    else :
-        mkfile = os.path.join(clibDir, "Makefile_latex")
-    shutil.copy(mkfile, os.path.join(desdir, "Makefile"))
+    if False:
+        if use_pdflatex :
+            mkfile = os.path.join(clibDir, "Makefile_pdflatex")
+        else :
+            mkfile = os.path.join(clibDir, "Makefile_latex")
+        shutil.copy(mkfile, os.path.join(desdir, "Makefile"))
+        latexmk = "make"
+    else:
+        print ("using latexmk instead")
+        if use_pdflatex :
+            latexmk = "latexmk -pdf"
+        else:
+            latexmk = "latexmk"
     cwd = os.getcwd() # get current directory
     os.chdir(desdir)
     try:
-        os.system("make")
+        os.system(latexmk)
     finally:
         os.chdir(cwd)
     pdfout = os.path.join(desdir, masterfile.replace(".tex", ".pdf"))
@@ -492,26 +500,37 @@ def convert(filename, year, saveDir, clibDir, dropDir, font, fontheight, fontwid
         use_pdflatex = False
     # extract content
     t.extractall(desdir)
+    # go = raw_input('go to next step?') # debug
     texfiles, clsfiles, bstfiles, bblfiles = examine_texenv(desdir)
     # go through all files
+    # go = raw_input('go to next step?') # debug
     masterfile, texversion = getMaster(texfiles, desdir)
     # deal with old latex2.09 files
+    # go = raw_input('go to next step?') # debug
     handleOldTeX(texversion, clibDir, desdir)
     # copy bbl files if there is one
     bblname = getBiblio(bblfiles, desdir)
+    # bblname = None
     # examine documentclass and find author
+    # go = raw_input('go to next step?') # debug
     classoption, classname, author = checkMaster(masterfile, texversion)
     # copy style files
+    # go = raw_input('go to next step?') # debug
     getClass(classname, clibDir, clsfiles, bstfiles, desdir)
     # find options of documentclass
+    # go = raw_input('go to next step?') # debug
     hasoptbracket, classopts = getOpt(classoption)
     # parse documentclass and options
+    # go = raw_input('go to next step?') # debug
     col_set, onecol_arg, twocol_arg = parse_documentclass(classname, classopts, desdir)
     # heavy duty modification of the master TeX file
+    # go = raw_input('go to next step?') # debug
     kindlizeit(masterfile, hasoptbracket, classname, col_set, onecol_arg,
                twocol_arg, fontstr, magnifystr, bblname)
     # recompile
+    # go = raw_input('go to next step?') # debug
     pdfout = do_latex(clibDir, desdir, masterfile, use_pdflatex=use_pdflatex)
+    #
     # rename
     newpdfname = author + year + ".pdf"
     newpdf = os.path.join(desdir, newpdfname)
