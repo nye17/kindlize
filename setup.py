@@ -5,7 +5,7 @@ except:
 
 setup(
     name='kindlize',
-    version='0.1.0',
+    version='0.1.1',
     author='Ying Zu',
     author_email='zuying@gmail.com',
     url='http://bitbucket.org/nye17/kindlize',

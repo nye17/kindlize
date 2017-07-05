@@ -5,6 +5,11 @@ Kindlize
 Changelog
 ---------
 
+### 0.1.1 ###
+
+* 21 May 2017: switched from Makefile to latexmk.
+
+
 ### 0.1.0 ###
 
 * 07 May 2013: fixed several packaging errors in previous tar balls.
@@ -62,6 +67,7 @@ Requirements
 
 * python2.7
 * a LaTeX environment
+* latexmk
 * rsync
 * [Dropbox](http://db.tt/i5xwlaj9) (suggested)
 * GNU Make

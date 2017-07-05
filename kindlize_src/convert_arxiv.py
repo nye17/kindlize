@@ -310,6 +310,7 @@ def dropit(inpdf, dropDir, where="") :
 
 def do_latex(clibDir, desdir, masterfile, use_pdflatex=False) :
     if False:
+        # makefile deprecated
         if use_pdflatex :
             mkfile = os.path.join(clibDir, "Makefile_pdflatex")
         else :
